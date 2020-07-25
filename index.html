@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <!-- Required meta tags -->
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <!-- GoogleFont -->
+        <link href="https://fonts.googleapis.com/css2?family=Jua&display=swap" rel="stylesheet">
+        <!-- Bootstrap CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+              integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+              crossorigin="anonymous">
+        <!-- Optional JavaScript -->
+        <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+                integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+                crossorigin="anonymous"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+                integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+                crossorigin="anonymous"></script>
+        <script>
+            function order() {
+                let nameBox = $('#nameBox').val();
+                let numBox = $('#numBox').val();
+                let addressBox = $('#addressBox').val();
+                let phoneBox = $('#phoneBox').val();
+                if (nameBox == '') {
+                    alert('성함을 입력하세요.')
+                    $('nameBox').focus();
+                    return;
+                } else if (numBox == '') {
+                    alert('수량을 입력하세요.')
+                    $('numBox').focus();
+                    return;
+                } else if (addressBox == '') {
+                    alert('주소를 입력하세요.')
+                    $('addressBox').focus();
+                    return;
+                } else if (phoneBox == '') {
+                    alert('연락처를 입력하세요.')
+                    $('phoneBox').focus();
+                    return;
+                } else {
+                    alert('주문이 접수되었습니다 !!')
+                    $('#nameBox').val('');
+                    $('#numBox').val(30);
+                    $('#addressBox').val('');
+                    $('#phoneBox').val('');
+                }
+            }
+
+            $(document).ready(function () {
+                $.ajax({
+                    type: "GET", // GET 방식으로 요청한다.
+                    url: "https://api.manana.kr/exchange/rate.json",
+                    data: {}, // 요청하면서 함께 줄 데이터 (GET 요청시엔 비워두세요)
+                    success: function (response) { // 서버에서 준 결과를 response라는 변수에 담음
+                        let exchangeRate = response[1]['rate'];
+                        let tempHtml = `<p>오늘의 환율 : ${exchangeRate}원/1달러</p>`;
+                        $('#titlePlace').append(tempHtml);
+                    }
+                })
+            });
+        </script>
+        <style>
+            * {
+                font-family: 'Jua', sans-serif;
+            }
+
+            .fullContents {
+                width: 600px;
+                margin: auto;
+                padding: 30px;
+            }
+
+            .pictureBox {
+                width: 600px;
+                height: 400px;
+                margin: auto;
+
+                background-position: center;
+                background-size: cover;
+                background-image: url("https://shop-phinf.pstatic.net/20191217_51/1576574170450wnUb1_JPEG/13934909083882222_34627394.jpg");
+                border-radius: 10px;
+            }
+
+            .titleBox {
+                margin-top: 20px;
+                margin-bottom: 10px;
+            }
+
+            h1, h5 {
+                display: inline;
+            }
+
+            .orderBox {
+                margin-bottom: 10px;
+            }
+
+            .orderBtn {
+                width: fit-content;
+                margin: auto;
+            }
+        </style>
+
+        <title>짭짤쇼핑몰</title>
+
+    </head>
+    <body>
+        <div class="fullContents">
+            <div class="pictureBox">
+            </div>
+
+            <div class="titleBox" id="titlePlace">
+                <h1>촉촉 쫄깃 구운란 </h1>
+                <h5> 가격 : 5,000원 / 30알</h5>
+                <p/>
+                <p>먹기 좋게 알맞게 구워진 계란으로 껍질을 까보면 촉촉함이 느껴지고 담백한 맛과 쫄깃한 식감을 느낄 수 있습니다.</p>
+            </div>
+
+            <div class="orderBox">
+                <div class="input-group input-group-sm mb-3">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="basic-addon1">성 함</span>
+                        </div>
+                        <input type="text" class="form-control" id="nameBox" aria-label="Username"
+                               aria-describedby="basic-addon1">
+                    </div>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="basic-addon2">수 량</span>
+                        </div>
+                        <select class="form-control" id="numBox">
+                            <option>30</option>
+                            <option>60</option>
+                            <option>90</option>
+                            <option>120</option>
+                            <option>150</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="basic-addon3">주 소</span>
+                        </div>
+                        <input type="text" class="form-control" id="addressBox" aria-label="Username"
+                               aria-describedby="basic-addon1">
+                    </div>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="basic-addon4">연락처</span>
+                        </div>
+                        <input type="text" class="form-control" id="phoneBox" aria-label="Username"
+                               aria-describedby="basic-addon1">
+                    </div>
+                </div>
+            </div>
+            <div class="orderBtn">
+                <button onclick="order()" type="button" class="btn btn-outline-secondary">주문하기</button>
+            </div>
+        </div>
+    </body>
+</html>

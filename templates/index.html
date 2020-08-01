@@ -20,37 +20,14 @@
                 integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
                 crossorigin="anonymous"></script>
         <script>
-            function order() {
-                let nameBox = $('#nameBox').val();
-                let numBox = $('#numBox').val();
-                let addressBox = $('#addressBox').val();
-                let phoneBox = $('#phoneBox').val();
-                if (nameBox == '') {
-                    alert('성함을 입력하세요.')
-                    $('nameBox').focus();
-                    return;
-                } else if (numBox == '') {
-                    alert('수량을 입력하세요.')
-                    $('numBox').focus();
-                    return;
-                } else if (addressBox == '') {
-                    alert('주소를 입력하세요.')
-                    $('addressBox').focus();
-                    return;
-                } else if (phoneBox == '') {
-                    alert('연락처를 입력하세요.')
-                    $('phoneBox').focus();
-                    return;
-                } else {
-                    alert('주문이 접수되었습니다 !!')
-                    $('#nameBox').val('');
-                    $('#numBox').val(30);
-                    $('#addressBox').val('');
-                    $('#phoneBox').val('');
-                }
-            }
 
             $(document).ready(function () {
+                showExchangeRate()
+                showOrder()
+            });
+
+            // 오늘의 환율 표시
+            function showExchangeRate() {
                 $.ajax({
                     type: "GET", // GET 방식으로 요청한다.
                     url: "https://api.manana.kr/exchange/rate.json",
@@ -59,9 +36,73 @@
                         let exchangeRate = response[1]['rate'];
                         let tempHtml = `<p>오늘의 환율 : ${exchangeRate}원/1달러</p>`;
                         $('#titlePlace').append(tempHtml);
+
                     }
                 })
-            });
+            }
+
+            // DB에서 주문목록 끌어오기
+            function showOrder() {
+                $.ajax({
+                    type: "GET",
+                    url: "/order",
+                    data: {},
+                    success: function (response) {
+                        if (response["result"] == "success") {
+                            alert(response["msg"]);
+                            window.location.reload();
+                        }
+                    }
+                })
+            }
+
+            //주문버튼 누를 시 호출
+            function makeOrder() {
+                let name = $('#nameBox').val();
+                let count = $('#countBox').val();
+                let address = $('#addressBox').val();
+                let phone = $('#phoneBox').val();
+                if (name == '') {
+                    alert('성함을 입력하세요.')
+                    $('nameBox').focus();
+                    return;
+                } else if (count == '') {
+                    alert('수량을 입력하세요.')
+                    $('countBox').focus();
+                    return;
+                } else if (address == '') {
+                    alert('주소를 입력하세요.')
+                    $('addressBox').focus();
+                    return;
+                } else if (phone == '') {
+                    alert('연락처를 입력하세요.')
+                    $('phoneBox').focus();
+                    return;
+                } else {    // 주문이 제대로 접수
+                    postOrder(name, count, address, phone)
+                }
+            }
+
+            // makeOrder 내부에 포스트함수
+            function postOrder(name, count, address, phone) {
+                $.ajax({
+                    type: "POST",
+                    url: "/order",
+                    data: {
+                        name_give: name,
+                        count_give: count,
+                        address_give: address,
+                        phone_give: phone
+                    },
+                    success: function (response) {
+                        if (response["result"] == "success") {
+                            alert(response["msg"]);
+                            window.location.reload();
+                        }
+                    }
+                })
+            }
+
         </script>
         <style>
             * {
@@ -132,7 +173,7 @@
                         <div class="input-group-prepend">
                             <span class="input-group-text" id="basic-addon2">수 량</span>
                         </div>
-                        <select class="form-control" id="numBox">
+                        <select class="form-control" id="countBox">
                             <option>30</option>
                             <option>60</option>
                             <option>90</option>
@@ -157,7 +198,27 @@
                 </div>
             </div>
             <div class="orderBtn">
-                <button onclick="order()" type="button" class="btn btn-outline-secondary">주문하기</button>
+                <button class="btn btn-outline-secondary" onclick="makeOrder()" type="button">주문하기</button>
+            </div>
+            <div class="orders">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th scope="col">이름</th>
+                        <th scope="col">수량</th>
+                        <th scope="col">주소</th>
+                        <th scope="col">전화번호</th>
+                    </tr>
+                    </thead>
+                    <tbody id="orders-box">
+                    <tr>
+                        <td>박르탄</td>
+                        <td>30</td>
+                        <td>스파르타국 코딩시 프론트구</td>
+                        <td>01012345678</td>
+                    </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
     </body>

@@ -41,7 +41,7 @@
                 })
             }
 
-            // DB에서 주문목록 끌어오기
+            // DB에서 주문목록 끌어오기, 보여주기
             function showOrder() {
                 $.ajax({
                     type: "GET",
@@ -49,11 +49,31 @@
                     data: {},
                     success: function (response) {
                         if (response["result"] == "success") {
-                            alert(response["msg"]);
-                            window.location.reload();
+                            let orders = response['order']
+                            for (let i = 0; i < orders.length; i++) {
+                                let name = orders[i]['name']
+                                let count = orders[i]['count']
+                                let address = orders[i]['address']
+                                let phone = orders[i]['phone']
+
+                                appendOrder(name, count, address, phone)
+                            }
+                        } else {
+                            alert("불러오기 오류")
                         }
                     }
                 })
+            }
+
+            // 주문이 추가 될 때 주문을 페이지 하단에 추가
+            function appendOrder(name, count, address, phone) {
+                let temp_html = `<tr>
+                        <td>${name}</td>
+                        <td>${count}</td>
+                        <td>${address}</td>
+                        <td>${phone}</td>
+                    </tr>`
+                $('#orders-box').append(temp_html)
             }
 
             //주문버튼 누를 시 호출
@@ -98,6 +118,8 @@
                         if (response["result"] == "success") {
                             alert(response["msg"]);
                             window.location.reload();
+                        } else {
+                            alert("주문 오류")
                         }
                     }
                 })
@@ -142,6 +164,11 @@
             .orderBtn {
                 width: fit-content;
                 margin: auto;
+            }
+
+            .orders {
+                margin-top: 20px;
+                margin-bottom: 20px;
             }
         </style>
 
